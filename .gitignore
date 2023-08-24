@@ -1,0 +1,6 @@
+/**/__pycache__/
+/Env/*
+/Model/*
+
+/*.py
+!/__main__.py
