@@ -1,19 +1,43 @@
-from Utils import MODEL, CLASSES
+from Utils  import LIVE, MODEL, CLASSES, annotate, recorder
+from Src    import recognize_color, chooseOne, recognize_violation, place_line
 
 from ultralytics import YOLO
 model = YOLO(model=MODEL)
 
-from cv2 import VideoCapture, resize, INTER_AREA, imshow, waitKey
+from cv2 import VideoCapture, resize, imshow, waitKey, getWindowProperty
+# import cv2 as cv
 
-cap = VideoCapture('./Sample/1.mp4')
+if not LIVE: cap = VideoCapture('./Sample/2.mp4')
+else:
+   cap = VideoCapture(0)
+   cap.set(3, 1280)  # Width
+   cap.set(4,  720)  # Height
+   cap.set(5,   30)  # Fps
+
+out = recorder('2 Colour Recognition', fps=30, resolution=(1280,720))
+
 while cap.isOpened():
    success, frame = cap.read()
    if not success: break
    else:
-      scale = 720/frame.shape[0]
-      frame = resize(frame, None, fx=scale, fy=scale, interpolation=INTER_AREA)
-      result = model.track(frame, persist=True, classes=[n for n in CLASSES])[0]
-      annotated = result.plot()
-      imshow('Tracking', annotated)
-      if waitKey(1) & 0xFF == ord("q"): break
+      if frame.shape[0]>720: frame = resize(frame, None, fx=720/frame.shape[0], fy=720/frame.shape[0])
+      
+      result = model.track(frame, persist=True, classes=[n for n in CLASSES])[0].boxes.data
+      traffic_lights = result[result[:,-1]==9]
+      # vehicles = result[result[:,-1]!=9]
+      
+      light_colors = recognize_color(frame, traffic_lights, print_info=False)
+      # chosen = chooseOne(light_colors)
+      # if chosen[1]: place_line(traffic_lights[chosen[0]][:4])
+
+      annotate(frame, traffic_lights, light_colors)
+      # annotate(frame, vehicles)
+      # annotate(frame, result)
+
+      out.write(frame)
+      imshow('YOLOv8', frame)
+      
+      if waitKey(1) & 0xFF == 32: waitKey(0)
+      if waitKey(1) & 0xFF == 27 or getWindowProperty('YOLOv8', 4) <= 0: break
+
 cap.release()

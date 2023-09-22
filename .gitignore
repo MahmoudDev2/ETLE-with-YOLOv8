@@ -1,5 +1,8 @@
 /**/__pycache__/
 /Env/**/
 
+# /Model/*.pt
+
 /*.py
 !/__main__.py
+/**/*.ie.py

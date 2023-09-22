@@ -1,15 +1,26 @@
-input_mode:       # Choose one, don't be edited
-  - video file
+live_mode: False  # Choose one, don't be edited
+  # - video file
   # - live camera
 
-model_size:       # Choose one, don't be edited
-  - nano
+model_size: medium  # Choose one, don't be edited
+  # - nano
   # - small
   # - medium
   # - large
   # - extra large
+
+color_pallete:
+  red       : [220,  38,  38]   # For red light
+  amber     : [217, 119,   6]   # For yellow light
+  lime      : [101, 163,  13]   # For green light
+  emeralad  : [  5, 150, 105]   # 
+  cyan      : [  8, 145, 178]   # For car
+  blue      : [ 37,  99, 235]   # For motorcycle
+  violet    : [124,  58, 237]   # For bus
+  fucshia   : [192,  38, 211]   # For Truck
+  rose      : [225,  29,  72]   # 
   
-object_classes:     # Multiple choices, you can edit the name only
+object_classes:   # Multiple choices, you can edit the name only
   # 0: person
   # 1: bicycle
   2: car
