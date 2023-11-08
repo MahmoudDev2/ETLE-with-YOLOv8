@@ -27,9 +27,9 @@ def validateYellow (cropped_frame:ndarray) -> bool:
 
    crop = lambda frm, cen, dim: frm[cen[0]-dim[0]//2:cen[0]+dim[0]//2, cen[1]-dim[1]//2:cen[1]+dim[1]//2]
 
-   if dim[0]>dim[1]: dim[0] = dim[0]//3   # Vertical Traffic Light
-   else: dim[1] = dim[1]//3               # Horizontal Traffic Light
-   print(cen[0]-dim[0]//2, cen[0]+dim[0]//2, cen[1]-dim[1]//2, cen[1]+dim[1]//2)
+   if dim[0]>dim[1]: dim[0] = dim[0]//4   # Vertical Traffic Light
+   else: dim[1] = dim[1]//4               # Horizontal Traffic Light
+   
    yellow_light = crop(cropped_frame, cen, dim)
 
    if maskColor(yellow_light, validateYellow=True)>50: return True

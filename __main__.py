@@ -1,20 +1,31 @@
 from Utils  import LIVE, MODEL, CLASSES, annotate, recorder
-from Src    import recognize_color, chooseOne, recognize_violation, place_line
+from Src    import recognize_color, chooseOne, recognize_violation
 
 from ultralytics import YOLO
 model = YOLO(model=MODEL)
 
-from cv2 import VideoCapture, resize, imshow, waitKey, getWindowProperty
-# import cv2 as cv
+from cv2 import VideoCapture, resize, imshow, waitKey, getWindowProperty, imwrite
 
-if not LIVE: cap = VideoCapture('./Sample/2.mp4')
+if not LIVE: cap = VideoCapture('./Sample/1.mp4')
 else:
    cap = VideoCapture(0)
    cap.set(3, 1280)  # Width
    cap.set(4,  720)  # Height
    cap.set(5,   30)  # Fps
 
-out = recorder('2 Colour Recognition', fps=30, resolution=(1280,720))
+# out = recorder('2 Colour Recognition', fps=30, resolution=(1280,720))
+
+line_height = {
+   'n'   : 0,
+   'x'   : 0,
+   'sum' : 0,
+   'mean': 0
+}
+
+from torch import tensor
+violators = tensor([])
+
+# i = 0
 
 while cap.isOpened():
    success, frame = cap.read()
@@ -24,17 +35,21 @@ while cap.isOpened():
       
       result = model.track(frame, persist=True, classes=[n for n in CLASSES])[0].boxes.data
       traffic_lights = result[result[:,-1]==9]
-      # vehicles = result[result[:,-1]!=9]
+      vehicles = result[result[:,-1]!=9]
       
       light_colors = recognize_color(frame, traffic_lights, print_info=False)
-      # chosen = chooseOne(light_colors)
-      # if chosen[1]: place_line(traffic_lights[chosen[0]][:4])
+      chosen = chooseOne(light_colors)
 
-      annotate(frame, traffic_lights, light_colors)
-      # annotate(frame, vehicles)
-      # annotate(frame, result)
+      annotate(frame, traffic_lights, recognizedColor=light_colors)
 
-      out.write(frame)
+      if chosen[1]:
+         violator = recognize_violation(frame, vehicles, traffic_lights[chosen[0]][:4], line_height, violators, imaginary_line=True)
+         print(violator)
+         annotate(frame, violator, violationMode=True)
+
+      # out.write(frame)
+      # i += 1
+      # if chosen in light_colors['yellow']: imwrite(f'Export/4-{i}.jpg', frame)
       imshow('YOLOv8', frame)
       
       if waitKey(1) & 0xFF == 32: waitKey(0)

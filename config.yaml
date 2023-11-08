@@ -2,7 +2,7 @@ live_mode: False  # Choose one, don't be edited
   # - video file
   # - live camera
 
-model_size: medium  # Choose one, don't be edited
+model_size: nano  # Choose one, don't be edited
   # - nano
   # - small
   # - medium
@@ -13,12 +13,12 @@ color_pallete:
   red       : [220,  38,  38]   # For red light
   amber     : [217, 119,   6]   # For yellow light
   lime      : [101, 163,  13]   # For green light
-  emeralad  : [  5, 150, 105]   # 
+  emeralad  : [  5, 150, 105]   # For light's off
   cyan      : [  8, 145, 178]   # For car
   blue      : [ 37,  99, 235]   # For motorcycle
   violet    : [124,  58, 237]   # For bus
-  fucshia   : [192,  38, 211]   # For Truck
-  rose      : [225,  29,  72]   # 
+  fucshia   : [192,  38, 211]   # For truck
+  rose      : [225,  29,  72]   # For traffic light
   
 object_classes:   # Multiple choices, you can edit the name only
   # 0: person

@@ -6,14 +6,17 @@ def current_color (n:int, recognizedColor) -> str:
       for data in values:
          if data[0]==n: return key
 
-def annotate (frame:ndarray, prediction:Tensor, recognizedColor={}, scale:float=.5, padding:int=6):
+def annotate (frame:ndarray, prediction:Tensor, recognizedColor={}, violationMode:bool=False, scale:float=.5, padding:int=6):
 
    from cv2 import rectangle, getTextSize, putText
    from torch import ceil, floor
    from Utils import CLASSES, PALLETES
 
    for n,row in enumerate(prediction):
-      label = f'{row[4].to(int)}. {row[5]*100:.2f}% {CLASSES[int(row[6])].title()}' if not recognizedColor else f'{row[5]*100:.2f}% {current_color(n, recognizedColor).upper()}'
+      if violationMode:
+         label = f'{row[5]*100:.2f}% {CLASSES[int(row[6])].title()} VIOLATES'
+         pass
+      else: label = f'{row[4].to(int)}. {row[5]*100:.2f}% {CLASSES[int(row[6])].title()}' if not recognizedColor else f'{row[5]*100:.2f}% {current_color(n, recognizedColor).upper()}'
       color = PALLETES[CLASSES[int(row[6])]] if not recognizedColor else PALLETES[current_color(n, recognizedColor)]
 
       x1 = int(ceil(row[0]))
