@@ -1,6 +1,8 @@
 from Utils  import LIVE, MODEL, CLASSES, annotate, recorder
 from Src    import recognize_color, chooseOne, recognize_violation
 
+from torch import empty
+from torch import any as there
 from ultralytics import YOLO
 model = YOLO(model=MODEL)
 
@@ -22,9 +24,7 @@ line_height = {
    'mean': 0
 }
 
-from torch import tensor
-violators = tensor([])
-
+veh_set = empty(0)
 # i = 0
 
 while cap.isOpened():
@@ -43,9 +43,9 @@ while cap.isOpened():
       annotate(frame, traffic_lights, recognizedColor=light_colors)
 
       if chosen[1]:
-         violator = recognize_violation(frame, vehicles, traffic_lights[chosen[0]][:4], line_height, violators, imaginary_line=True)
-         print(violator)
-         annotate(frame, violator, violationMode=True)
+         veh_set, violator = recognize_violation(frame, vehicles, traffic_lights[chosen[0]][:4], line_height, veh_set, imaginary_line=True)
+         print(veh_set, violator, sep='\n')
+         if there(violator): annotate(frame, violator, violationMode=True)
 
       # out.write(frame)
       # i += 1

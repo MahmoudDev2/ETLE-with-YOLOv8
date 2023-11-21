@@ -15,7 +15,7 @@ def annotate (frame:ndarray, prediction:Tensor, recognizedColor={}, violationMod
    for n,row in enumerate(prediction):
       if violationMode:
          label = f'{row[5]*100:.2f}% {CLASSES[int(row[6])].title()} VIOLATES'
-         pass
+         
       else: label = f'{row[4].to(int)}. {row[5]*100:.2f}% {CLASSES[int(row[6])].title()}' if not recognizedColor else f'{row[5]*100:.2f}% {current_color(n, recognizedColor).upper()}'
       color = PALLETES[CLASSES[int(row[6])]] if not recognizedColor else PALLETES[current_color(n, recognizedColor)]
 

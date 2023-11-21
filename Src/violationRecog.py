@@ -1,4 +1,4 @@
-from torch import Tensor, tensor, cat
+from torch import Tensor, tensor, cat, isin, unique
 from cv2 import line
 from numpy import ndarray
 
@@ -13,16 +13,13 @@ def place_line (image:ndarray, position:float):
    position = round(position)
    line(image, (0,position), (image.shape[1],position), (0,0,0), 2)
 
-def recognize_violation (image:ndarray, vehicles:Tensor, chosen_xyxy:Tensor, line_height:list, violator:Tensor, imaginary_line:bool=False):
+def recognize_violation (image:ndarray, vehicles:Tensor, chosen_xyxy:Tensor, line_height:list, veh_set:Tensor, imaginary_line:bool=False):
    new_height = chosen_xyxy[3].item() - chosen_xyxy[1].item()
    position = 3.5 * height_TL(line_height, new_height) + chosen_xyxy[1].item()
-
    if imaginary_line: place_line(image, position)
 
-   print('\n', position)
-   for v in vehicles:
-      veh_pos = (.5*(v[1]-v[3]) + v[3]).item()
-      if veh_pos > position: violators = cat((violators, v.unsqueeze(0)), dim=0)
-      print(veh_pos, end=' ')
+   violators = vehicles[(vehicles[:,1]+(vehicles[:,3]-vehicles[:,1])/2)>position]
+   veh_set = unique(cat((veh_set, violators[:, 4])))
+   violators = vehicles[isin(vehicles[:,4], veh_set)]
 
-   return violator
+   return (veh_set, violators[(violators[:,1]+(violators[:,3]-violators[:,1])/2)<position])
