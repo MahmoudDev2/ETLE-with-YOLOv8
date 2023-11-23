@@ -7,15 +7,15 @@ from ultralytics import YOLO
 model = YOLO(model=MODEL)
 
 from cv2 import VideoCapture, resize, imshow, waitKey, getWindowProperty, imwrite
-
-if not LIVE: cap = VideoCapture('./Sample/1.mp4')
+no = 1
+if not LIVE: cap = VideoCapture(f'./Sample/{no}.mp4')
 else:
    cap = VideoCapture(0)
    cap.set(3, 1280)  # Width
    cap.set(4,  720)  # Height
    cap.set(5,   30)  # Fps
 
-# out = recorder('2 Colour Recognition', fps=30, resolution=(1280,720))
+out = recorder(f'Medium {no}', fps=30, resolution=(1280,720))
 
 line_height = {
    'n'   : 0,
@@ -25,7 +25,8 @@ line_height = {
 }
 
 veh_set = empty(0)
-# i = 0
+raw_dat = []
+data = []
 
 while cap.isOpened():
    success, frame = cap.read()
@@ -43,11 +44,12 @@ while cap.isOpened():
       annotate(frame, traffic_lights, recognizedColor=light_colors)
 
       if chosen[1]:
-         veh_set, violator = recognize_violation(frame, vehicles, traffic_lights[chosen[0]][:4], line_height, veh_set, imaginary_line=True)
-         print(veh_set, violator, sep='\n')
+         raw, pos, veh_set, violator = recognize_violation(frame, vehicles, traffic_lights[chosen[0]][:4], line_height, veh_set, imaginary_line=True)
+         raw_dat.append(raw)
+         data.append(pos)
          if there(violator): annotate(frame, violator, violationMode=True)
 
-      # out.write(frame)
+      out.write(frame)
       # i += 1
       # if chosen in light_colors['yellow']: imwrite(f'Export/4-{i}.jpg', frame)
       imshow('YOLOv8', frame)
@@ -56,3 +58,9 @@ while cap.isOpened():
       if waitKey(1) & 0xFF == 27 or getWindowProperty('YOLOv8', 4) <= 0: break
 
 cap.release()
+
+from numpy import array, float32, save
+raw_dat = array(raw_dat, dtype=float32)
+data = array(data, dtype=float32)
+save(f'./Data/Raw_IL{no}.npy', raw_dat)
+save(f'./Data/IL{no}.npy', data)

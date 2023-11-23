@@ -2,7 +2,7 @@ live_mode: False  # Choose one, don't be edited
   # - video file
   # - live camera
 
-model_size: nano  # Choose one, don't be edited
+model_size: medium  # Choose one, don't be edited
   # - nano
   # - small
   # - medium

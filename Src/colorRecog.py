@@ -75,7 +75,7 @@ def recognize_color (frame:ndarray, prediction:Tensor, print_info:bool=False):
 def chooseOne (light_colors:dict[str,list]):
    chosen = [int(0), float(0)]
    for color, values in light_colors.items():
-      if color == "light's off": continue
+      if color != "red": continue
       for value in values:
          if value[-1] > chosen[-1]: chosen = list(value)
    return tuple(chosen)

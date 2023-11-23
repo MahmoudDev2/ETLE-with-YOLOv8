@@ -17,9 +17,9 @@ def recognize_violation (image:ndarray, vehicles:Tensor, chosen_xyxy:Tensor, lin
    new_height = chosen_xyxy[3].item() - chosen_xyxy[1].item()
    position = 3.5 * height_TL(line_height, new_height) + chosen_xyxy[1].item()
    if imaginary_line: place_line(image, position)
-
+   raw_position = 3.5 * new_height + chosen_xyxy[1].item()
    violators = vehicles[(vehicles[:,1]+(vehicles[:,3]-vehicles[:,1])/2)>position]
    veh_set = unique(cat((veh_set, violators[:, 4])))
    violators = vehicles[isin(vehicles[:,4], veh_set)]
 
-   return (veh_set, violators[(violators[:,1]+(violators[:,3]-violators[:,1])/2)<position])
+   return (raw_position, position, veh_set, violators[(violators[:,1]+(violators[:,3]-violators[:,1])/2)<position])

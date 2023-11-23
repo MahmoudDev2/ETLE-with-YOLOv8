@@ -2,5 +2,6 @@
 /Env/**/
 
 /*.py
+/*.ipynb
 !/__main__.py
 /**/*.ie.py
