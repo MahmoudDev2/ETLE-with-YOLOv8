@@ -15,7 +15,7 @@ else:
    cap.set(4,  720)  # Height
    cap.set(5,   30)  # Fps
 
-# out = recorder(f'Medium {no}', fps=30, resolution=(1280,720))
+out = recorder(f'Medium {no}', fps=30, resolution=(1280,720))
 
 line_height = {
    'n'   : 0,
@@ -28,10 +28,9 @@ veh_set = empty(0)
 # raw_dat = []
 # data = []
 
-# f = 2
+f = 0
 while cap.isOpened():
-   # f += 1
-   # if f <= 150: continue
+   f += 1
    success, frame = cap.read()
    if not success: break
    else:
@@ -50,25 +49,24 @@ while cap.isOpened():
       #    imwrite(f'./Export/Before {no}TL{f}.jpg', frame)
       #    break
       if chosen[1]:
-         break
          raw, pos, veh_set, violator = recognize_violation(frame, vehicles, traffic_lights[chosen[0]][:4], line_height, veh_set, imaginary_line=True)
          # raw_dat.append(raw)
          # data.append(pos)
-         if there(violator): annotate(frame, violator, violationMode=True)
+         if there(violator):
+            print(f"Frame {f}: VIOLATION DETECTED!")
+            annotate(frame, violator, violationMode=True)
       # data.append(chosen[1]) if chosen[1] else data.append(0)
       # if chosen[1] == 77.08:
       #    imwrite(f'./Export/{no}TL{f}.jpg', frame)
       #    break
-      # out.write(frame)
+      out.write(frame)
       
       # if chosen in light_colors['yellow']: imwrite(f'Export/4-{i}.jpg', frame)
-      imshow('YOLOv8', frame)
-      print(traffic_lights, light_colors, chosen, sep='\n')
+      #imshow('YOLOv8', frame)
+      print(f"Frame {f}:", traffic_lights, light_colors, chosen, sep='\n')
       
-      if waitKey(1) & 0xFF == 32: waitKey(0)
-      if waitKey(1) & 0xFF == 27 or getWindowProperty('YOLOv8', 4) <= 0: break
-
 cap.release()
+out.release()
 
 # from numpy import array, float32, save
 # raw_dat = array(raw_dat, dtype=float32)
