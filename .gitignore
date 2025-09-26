@@ -1,7 +1,23 @@
-/**/__pycache__/
-/Env/**/
+# Ignore directories with large files or virtual environments
+/Export/
+/Model/
+/Env/
 
-/*.py
-/*.ipynb
-!/__main__.py
-/**/*.ie.py
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment files
+/venv/
+/env/
+/.venv/
+
+# Ignore IDE and editor files
+.vscode/
+.idea/
+
+# Ignore other artifacts
+*.log
+*.swp

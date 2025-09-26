@@ -8,7 +8,7 @@ def recorder (
 ):
    return VideoWriter(
       f'{directory}/{filename}.mp4',
-      VideoWriter_fourcc(*'avc1'),
+      VideoWriter_fourcc(*'mp4v'),
       fps,
       resolution
    )
